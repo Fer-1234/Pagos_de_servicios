@@ -2,28 +2,13 @@
 session_start();
 
 // ============================================
-// BASE DE DATOS - Parsear DATABASE_URL
+// BASE DE DATOS - CONEXIÓN DIRECTA
 // ============================================
-$dbUrl = getenv('DATABASE_URL');
-
-if ($dbUrl) {
-    // Parsear la URL de TiDB Cloud
-    // Formato: mysql://usuario:password@host:port/base_datos
-    $parsed = parse_url($dbUrl);
-    
-    define('DB_HOST', $parsed['host']);
-    define('DB_PORT', $parsed['port'] ?? '4000');
-    define('DB_USER', $parsed['user']);
-    define('DB_PASS', $parsed['pass']);
-    define('DB_NAME', ltrim($parsed['path'], '/'));
-} else {
-    // Fallback para desarrollo local
-    define('DB_HOST', 'localhost');
-    define('DB_PORT', '3306');
-    define('DB_USER', 'root');
-    define('DB_PASS', '');
-    define('DB_NAME', 'escuela_pagos');
-}
+define('DB_HOST', 'gateway01.us-east-1.prod.aws.tidbcloud.com');
+define('DB_PORT', '4000');
+define('DB_USER', '3rwEX3bM6GgimVG.root');
+define('DB_PASS', 'HxpS7cifPX2bMUJ8');
+define('DB_NAME', 'escuela_pagos');
 
 // ============================================
 // PAYPAL - SANDBOX
