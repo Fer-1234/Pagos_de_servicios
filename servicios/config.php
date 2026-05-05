@@ -2,7 +2,7 @@
 session_start();
 
 // ============================================
-// BASE DE DATOS - CONEXIÓN DIRECTA
+// BASE DE DATOS
 // ============================================
 define('DB_HOST', 'gateway01.us-east-1.prod.aws.tidbcloud.com');
 define('DB_PORT', '4000');
@@ -32,12 +32,22 @@ define('STRIPE_PUBLIC_KEY', getenv('STRIPE_PUBLIC_KEY') ?: 'pk_test_...');
 define('STRIPE_CURRENCY', 'mxn');
 
 // ============================================
-// CONEXIÓN A BASE DE DATOS
+// CONEXIÓN A BASE DE DATOS CON TLS
 // ============================================
-$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
+$conn = new mysqli();
+$conn->ssl_set(null, null, null, null, null);
+$conn->real_connect(
+    DB_HOST,
+    DB_USER,
+    DB_PASS,
+    DB_NAME,
+    DB_PORT,
+    null,
+    MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT
+);
 
 if ($conn->connect_error) {
-    die("Error de conexión: " . $conn->connect_error);
+    die("Error de conexión a la base de datos: " . $conn->connect_error);
 }
 
 $conn->set_charset("utf8mb4");
