@@ -1,8 +1,0 @@
-{
-    "name": "tu-usuario/tienda-digital",
-    "description": "Tienda Digital con pagos",
-    "type": "project",
-    "require": {
-        "php": ">=8.0"
-    }
-}
