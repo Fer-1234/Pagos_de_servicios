@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pago Exitoso</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .exito-container {
+            background: white;
+            padding: 50px;
+            border-radius: 30px;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 90%;
+        }
+        .checkmark {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+        }
+        .checkmark::after { content: '✓'; color: white; font-size: 55px; font-weight: bold; }
+        h1 { color: #333; margin-bottom: 10px; }
+        .detalle-pago {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .detalle-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .detalle-item:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 18px;
+            color: #667eea;
+        }
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+        }
+    </style>
+</head>
+<body>
+    <div class="exito-container">
+        <div class="checkmark"></div>
+        <h1>¡Pago Exitoso!</h1>
+        <p>Tu compra ha sido completada correctamente.</p>
+        
+        <div class="detalle-pago">
+            <div class="detalle-item">
+                <span>Producto:</span>
+                <span id="productoNombre">Cargando...</span>
+            </div>
+            <div class="detalle-item">
+                <span>Monto pagado:</span>
+                <span id="montoPagado">$0.00 MXN</span>
+            </div>
+            <div class="detalle-item">
+                <span>ID del pago:</span>
+                <span id="pagoId">---</span>
+            </div>
+        </div>
+        
+        <a href="/catalogo" class="btn">🛍️ Volver al Catálogo</a>
+    </div>
+
+    <script>
+        async function cargarDetallesPago() {
+            const params = new URLSearchParams(window.location.search);
+            const paymentId = params.get('payment_id') || params.get('collection_id') || 'N/A';
+            const externalRef = params.get('external_reference') || '';
+            
+            document.getElementById('pagoId').textContent = paymentId;
+            
+            // Intentar obtener el producto desde la referencia externa
+            if (externalRef && externalRef.includes('PROD_')) {
+                const match = externalRef.match(/PROD_(\d+)/);
+                if (match && match[1]) {
+                    try {
+                        const res = await fetch('/api/producto/' + match[1]);
+                        const producto = await res.json();
+                        if (!producto.error) {
+                            document.getElementById('productoNombre').textContent = producto.nombre;
+                            document.getElementById('montoPagado').textContent = '$' + parseFloat(producto.precio).toFixed(2) + ' MXN';
+                            return;
+                        }
+                    } catch(e) {}
+                }
+            }
+            
+            // Fallback
+            document.getElementById('productoNombre').textContent = 'Producto Digital';
+            document.getElementById('montoPagado').textContent = '--- MXN';
+        }
+        
+        cargarDetallesPago();
+    </script>
+</body>
+</html>

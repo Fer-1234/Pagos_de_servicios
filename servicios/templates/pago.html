@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pago con Tarjeta - Tienda Digital</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .header {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 22px;
+            font-weight: 700;
+            text-decoration: none;
+            color: white;
+        }
+        .user-menu { position: relative; }
+        .user-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 15px;
+        }
+        .user-btn:hover { background: rgba(255,255,255,0.3); }
+        .user-avatar {
+            width: 35px; height: 35px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            overflow: hidden;
+        }
+        .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .dropdown {
+            position: absolute;
+            top: 60px; right: 0;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            min-width: 220px;
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+        .dropdown.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .dropdown-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+        .dropdown-avatar {
+            width: 60px; height: 60px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            margin: 0 auto 10px;
+            overflow: hidden;
+        }
+        .dropdown-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .dropdown-name { font-weight: 600; font-size: 16px; }
+        .dropdown-email { font-size: 12px; opacity: 0.9; margin-top: 3px; }
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 20px;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+        .dropdown-item:hover { background: #f5f5f5; }
+        .dropdown-item.icon-red { color: #e74c3c; }
+        .dropdown-item.icon-red:hover { background: #fee; }
+        .dropdown-divider { height: 1px; background: #eee; margin: 5px 0; }
+        
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .pago-card {
+            background: white;
+            border-radius: 25px;
+            padding: 50px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+        }
+        .resumen {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 35px;
+            border: 2px solid #e9ecef;
+        }
+        .resumen h3 { 
+            color: #333; 
+            margin-bottom: 20px;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .resumen-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #dee2e6;
+            font-size: 16px;
+        }
+        .resumen-item:last-child { border-bottom: none; }
+        .resumen-item span:first-child { color: #666; }
+        .resumen-item span:last-child { color: #333; font-weight: 600; }
+        .total {
+            font-size: 36px;
+            color: #667eea;
+            font-weight: 800;
+            margin-top: 20px;
+            text-align: right;
+            padding-top: 20px;
+            border-top: 3px solid #667eea;
+        }
+        .total span { font-size: 18px; color: #999; font-weight: 400; }
+        
+        .metodos-pago {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .metodo-btn {
+            flex: 1;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: #333;
+        }
+        .metodo-btn:hover { border-color: #667eea; transform: translateY(-2px); }
+        .metodo-btn.active {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .metodo-btn .icono { font-size: 40px; margin-bottom: 10px; }
+        .metodo-btn .titulo { font-weight: 600; font-size: 16px; }
+        
+        .mp-info {
+            background: linear-gradient(135deg, #00b1ea 0%, #009ee3 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        .mp-info h3 { font-size: 22px; margin-bottom: 15px; }
+        .mp-info p { font-size: 14px; opacity: 0.9; margin-bottom: 20px; }
+        .btn-mp {
+            display: inline-block;
+            padding: 18px 50px;
+            background: white;
+            color: #009ee3;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border: none;
+            cursor: pointer;
+        }
+        .btn-mp:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        .btn-mp:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .medios-pago {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .medio-item {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+        .seguridad {
+            text-align: center;
+            margin-top: 20px;
+            color: #888;
+            font-size: 13px;
+        }
+        .volver {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 30px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .volver:hover { color: #764ba2; transform: translateX(-5px); }
+        
+        .loading {
+            display: none;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .loading.active { display: block; }
+        .error-msg {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            display: none;
+        }
+        .error-msg.active { display: block; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="/catalogo" class="logo-header">
+            <span>🛒</span>
+            <span>Tienda Digital</span>
+        </a>
+        <div class="user-menu">
+            <div class="user-btn" onclick="toggleMenu()">
+                <div class="user-avatar" id="menuAvatar">👤</div>
+                <span id="menuNombre">Cargando...</span>
+                <span>▼</span>
+            </div>
+            <div class="dropdown" id="userDropdown">
+                <div class="dropdown-header">
+                    <div class="dropdown-avatar" id="dropdownAvatar">👤</div>
+                    <div class="dropdown-name" id="dropdownNombre">Usuario</div>
+                    <div class="dropdown-email" id="dropdownEmail">email</div>
+                </div>
+                <a href="/perfil" class="dropdown-item"><span>👤</span><span>Mi Perfil</span></a>
+                <a href="/compras" class="dropdown-item"><span>📋</span><span>Mis Compras</span></a>
+                <div class="dropdown-divider"></div>
+                <a href="#" onclick="cerrarSesion()" class="dropdown-item icon-red"><span>🚪</span><span>Cerrar Sesion</span></a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="pago-card">
+            <div class="resumen">
+                <h3>📋 Resumen de Compra</h3>
+                <div class="resumen-item">
+                    <span>Producto</span>
+                    <span id="resumenNombre">Cargando...</span>
+                </div>
+                <div class="resumen-item">
+                    <span>Descripcion</span>
+                    <span id="resumenDesc">-</span>
+                </div>
+                <div class="resumen-item">
+                    <span>Precio unitario</span>
+                    <span id="resumenPrecio">$0.00 MXN</span>
+                </div>
+                <div class="total">
+                    Total: <span id="totalPrecio">$0.00</span> <span>MXN</span>
+                </div>
+            </div>
+            
+            <h3 style="margin-bottom: 20px; color: #333;">💳 Paga con Tarjeta o Mercado Pago</h3>
+            
+            <div class="mp-info">
+                <h3>🛒 Pagar con Mercado Pago</h3>
+                <p>Seras redirigido a Mercado Pago para completar tu pago de forma segura.</p>
+                <p style="font-size: 18px; font-weight: 700; margin-bottom: 20px;">
+                    Total: <span id="mpTotal">$0.00 MXN</span>
+                </p>
+                
+                <button class="btn-mp" id="btnPagar" onclick="procesarPagoMP()">
+                    💳 Ir a Pagar en Mercado Pago
+                </button>
+                
+                <div class="loading" id="loading">
+                    ⏳ Creando tu pago en Mercado Pago...
+                </div>
+                
+                <div class="error-msg" id="errorMsg"></div>
+                
+                <div class="medios-pago">
+                    <div class="medio-item">💳 Tarjetas</div>
+                    <div class="medio-item">🏪 Oxxo</div>
+                    <div class="medio-item">🏦 SPEI</div>
+                    <div class="medio-item">📱 Mercado Pago</div>
+                </div>
+            </div>
+            
+            <div class="seguridad">
+                🔒 Pago 100% seguro • Procesado por Mercado Pago • Sin datos sensibles en este sitio
+            </div>
+            
+            <a href="/catalogo" class="volver">← Volver al catalogo</a>
+        </div>
+    </div>
+
+    <script>
+        let productoActual = null;
+
+        async function cargarUsuario() {
+            const res = await fetch('/api/sesion');
+            const data = await res.json();
+            if (!data.loggedIn) { window.location.href = '/'; return; }
+            
+            document.getElementById('menuNombre').textContent = data.user.nombre;
+            document.getElementById('dropdownNombre').textContent = data.user.nombre;
+            document.getElementById('dropdownEmail').textContent = data.user.email;
+            
+            if (data.user.foto) {
+                const img = '<img src="/static/uploads/' + data.user.foto + '" alt="Foto">';
+                document.getElementById('menuAvatar').innerHTML = img;
+                document.getElementById('dropdownAvatar').innerHTML = img;
+            }
+        }
+
+        async function cargarProducto() {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            if (!id) { window.location.href = '/catalogo'; return; }
+            
+            const res = await fetch('/api/producto/' + id);
+            const producto = await res.json();
+            
+            if (producto.error) { window.location.href = '/catalogo'; return; }
+            
+            productoActual = producto;
+            
+            document.getElementById('resumenNombre').textContent = producto.nombre;
+            document.getElementById('resumenDesc').textContent = producto.descripcion || '-';
+            document.getElementById('resumenPrecio').textContent = '$' + parseFloat(producto.precio).toFixed(2) + ' MXN';
+            document.getElementById('totalPrecio').textContent = '$' + parseFloat(producto.precio).toFixed(2);
+            document.getElementById('mpTotal').textContent = '$' + parseFloat(producto.precio).toFixed(2) + ' MXN';
+        }
+
+        async function procesarPagoMP() {
+            if (!productoActual) return;
+            
+            const btn = document.getElementById('btnPagar');
+            const loading = document.getElementById('loading');
+            const errorMsg = document.getElementById('errorMsg');
+            
+            btn.disabled = true;
+            loading.classList.add('active');
+            errorMsg.classList.remove('active');
+            
+            try {
+                const res = await fetch('/api/mercadopago/preferencia', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ producto_id: productoActual.id })
+                });
+                
+                const data = await res.json();
+                
+                if (data.init_point) {
+                    window.location.href = data.init_point;
+                } else if (data.sandbox_init_point) {
+                    window.location.href = data.sandbox_init_point;
+                } else {
+                    console.error('Error MP:', data);
+                    errorMsg.textContent = 'Error: ' + (data.message || 'No se pudo crear el pago');
+                    errorMsg.classList.add('active');
+                    btn.disabled = false;
+                    loading.classList.remove('active');
+                }
+            } catch (err) {
+                console.error('Error:', err);
+                errorMsg.textContent = 'Error de conexion. Intenta de nuevo.';
+                errorMsg.classList.add('active');
+                btn.disabled = false;
+                loading.classList.remove('active');
+            }
+        }
+
+        function toggleMenu() {
+            document.getElementById('userDropdown').classList.toggle('active');
+        }
+        document.addEventListener('click', function(e) {
+            const menu = document.querySelector('.user-menu');
+            const dropdown = document.getElementById('userDropdown');
+            if (!menu.contains(e.target)) dropdown.classList.remove('active');
+        });
+
+        async function cerrarSesion() {
+            await fetch('/api/logout', { method: 'POST' });
+            window.location.href = '/';
+        }
+
+        cargarUsuario();
+        cargarProducto();
+    </script>
+</body>
+</html>

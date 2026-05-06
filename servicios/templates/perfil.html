@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mi Perfil - Tienda Digital</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        .logo-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 22px;
+            font-weight: 700;
+            text-decoration: none;
+            color: white;
+        }
+        .back-btn {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+            opacity: 0.9;
+            transition: opacity 0.3s;
+        }
+        .back-btn:hover { opacity: 1; }
+        
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .profile-card {
+            background: white;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+        .profile-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            border: 5px solid rgba(255,255,255,0.5);
+            font-size: 48px;
+            font-weight: 800;
+            color: #667eea;
+            overflow: hidden;
+        }
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .profile-name { font-size: 28px; font-weight: 700; margin-bottom: 5px; }
+        .profile-email { font-size: 14px; opacity: 0.9; }
+        .profile-body { padding: 40px; }
+        .section-title {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .form-group { margin-bottom: 25px; }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="password"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: #fafafa;
+        }
+        .form-group input:focus {
+            border-color: #667eea;
+            background: #fff;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+        .file-input-label {
+            display: block;
+            padding: 15px;
+            background: #f0f0f0;
+            border: 2px dashed #ccc;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #666;
+        }
+        .file-input-label:hover {
+            border-color: #667eea;
+            background: #f5f5ff;
+        }
+        .file-input-label.has-file {
+            border-color: #11998e;
+            background: #d4edda;
+            color: #155724;
+        }
+        .password-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #eee;
+        }
+        .password-note {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 15px;
+        }
+        .btn-save {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        .mensaje {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: 500;
+        }
+        .mensaje.exito {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .mensaje.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .foto-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 10px auto;
+            display: block;
+            border: 3px solid #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="/catalogo" class="back-btn">← Volver al Catalogo</a>
+        <a href="/catalogo" class="logo-header">
+            <span>🛒</span>
+            <span>Tienda Digital</span>
+        </a>
+        <div></div>
+    </div>
+    
+    <div class="container">
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar" id="avatarContainer">
+                    <span id="avatarIniciales">US</span>
+                </div>
+                <div class="profile-name" id="headerNombre">Cargando...</div>
+                <div class="profile-email" id="headerEmail">Cargando...</div>
+            </div>
+            
+            <div class="profile-body">
+                <h2 class="section-title">✏️ Editar Informacion Personal</h2>
+                
+                <div id="mensajes"></div>
+                
+                <form id="perfilForm" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label>📷 Foto de perfil</label>
+                        <img src="" class="foto-preview" id="preview" style="display:none;">
+                        <div class="file-input-wrapper">
+                            <input type="file" name="foto" id="foto" accept="image/jpeg,image/png,image/gif" onchange="mostrarNombre(this)">
+                            <label for="foto" class="file-input-label" id="fileLabel">
+                                📁 Seleccionar foto (JPG, PNG, GIF)
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Nombre completo</label>
+                        <input type="text" name="nombre" id="nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Correo electronico</label>
+                        <input type="email" name="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nombre de usuario</label>
+                        <input type="text" name="usuario" id="usuario" required>
+                    </div>
+                    
+                    <div class="password-section">
+                        <h3 class="section-title">🔒 Cambiar Contrasena</h3>
+                        <p class="password-note">Deja este campo vacio si no deseas cambiar tu contrasena actual.</p>
+                        <div class="form-group">
+                            <label>Nueva contrasena</label>
+                            <input type="password" name="password_nueva" id="passwordNueva" placeholder="Nueva contrasena (opcional)">
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="btn-save" onclick="guardarPerfil()">💾 Guardar Cambios</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function cargarPerfil() {
+            try {
+                const res = await fetch('/api/perfil');
+                const user = await res.json();
+                
+                if (user.error) {
+                    window.location.href = '/';
+                    return;
+                }
+                
+                document.getElementById('nombre').value = user.nombre;
+                document.getElementById('email').value = user.email;
+                document.getElementById('usuario').value = user.usuario;
+                document.getElementById('headerNombre').textContent = user.nombre;
+                document.getElementById('headerEmail').textContent = user.email;
+                
+                // Iniciales
+                const partes = user.nombre.split(' ');
+                let iniciales = '';
+                if (partes.length >= 2) {
+                    iniciales = (partes[0][0] + partes[partes.length-1][0]).toUpperCase();
+                } else {
+                    iniciales = user.nombre.substring(0, 2).toUpperCase();
+                }
+                document.getElementById('avatarIniciales').textContent = iniciales;
+                
+                // Foto
+                if (user.foto) {
+                    const imgUrl = '/static/uploads/' + user.foto;
+                    const imgHtml = '<img src="' + imgUrl + '" style="width:100%;height:100%;object-fit:cover;">';
+                    document.getElementById('avatarContainer').innerHTML = imgHtml;
+                    document.getElementById('preview').src = imgUrl;
+                    document.getElementById('preview').style.display = 'block';
+                }
+            } catch (err) {
+                window.location.href = '/';
+            }
+        }
+
+        async function guardarPerfil() {
+            const form = document.getElementById('perfilForm');
+            const formData = new FormData(form);
+            
+            try {
+                const res = await fetch('/api/perfil', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await res.json();
+                
+                if (!data.success) {
+                    mostrarMensaje('❌ ' + data.message, 'error');
+                    return;
+                }
+                
+                // Cambiar password si se proporciono
+                const passwordNueva = document.getElementById('passwordNueva').value;
+                if (passwordNueva) {
+                    await fetch('/api/perfil/password', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ password_nueva: passwordNueva })
+                    });
+                }
+                
+                mostrarMensaje('✅ Perfil actualizado correctamente', 'exito');
+                
+                // Actualizar foto en la UI si se subió una nueva
+                if (data.foto) {
+                    const imgUrl = '/static/uploads/' + data.foto;
+                    document.getElementById('avatarContainer').innerHTML = 
+                        '<img src="' + imgUrl + '" style="width:100%;height:100%;object-fit:cover;">';
+                    document.getElementById('preview').src = imgUrl;
+                    document.getElementById('preview').style.display = 'block';
+                }
+                
+                cargarPerfil();
+            } catch (err) {
+                mostrarMensaje('❌ Error al actualizar: ' + err.message, 'error');
+            }
+        }
+
+        function mostrarMensaje(texto, tipo) {
+            document.getElementById('mensajes').innerHTML = 
+                '<div class="mensaje ' + tipo + '">' + texto + '</div>';
+        }
+
+        function mostrarNombre(input) {
+            const label = document.getElementById('fileLabel');
+            if (input.files && input.files[0]) {
+                label.textContent = '✅ ' + input.files[0].name;
+                label.classList.add('has-file');
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('avatarContainer').innerHTML = 
+                        '<img src="' + e.target.result + '" style="width:100%;height:100%;object-fit:cover;">';
+                    document.getElementById('preview').src = e.target.result;
+                    document.getElementById('preview').style.display = 'block';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        cargarPerfil();
+    </script>
+</body>
+</html>
