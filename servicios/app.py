@@ -398,7 +398,7 @@ def api_mp_preferencia():
                 print(f"⚠️ Sin URL publica. Modo sandbox manual.")
             
             headers = {
-                'Authorization': 'Bearer APP_USR-7528501431612012-050516-4eb8b8f1f418240b42750e4f0e17b42d-3379785657',
+                'Authorization': 'Bearer APP_USR-7667354229771081-050518-4cb1dfab84659acb9c549be0e84213a3-2132422632',
                 'Content-Type': 'application/json'
             }
             
