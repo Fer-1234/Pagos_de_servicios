@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pago Exitoso</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #11998e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .exito-container {
+            background: white;
+            padding: 60px;
+            border-radius: 30px;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 90%;
+        }
+        .checkmark {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            animation: scaleIn 0.6s ease;
+            box-shadow: 0 10px 30px rgba(17, 153, 142, 0.4);
+        }
+        .checkmark::after {
+            content: '✓';
+            color: white;
+            font-size: 60px;
+            font-weight: bold;
+        }
+        @keyframes scaleIn {
+            0% { transform: scale(0) rotate(-180deg); }
+            60% { transform: scale(1.2) rotate(10deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+        h1 { color: #333; margin-bottom: 15px; font-size: 32px; }
+        .mensaje { color: #666; margin-bottom: 10px; line-height: 1.6; font-size: 16px; }
+        .metodo-pago {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        .detalle {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 25px 0;
+            text-align: left;
+        }
+        .detalle-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .detalle-item:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            color: #667eea;
+            font-size: 20px;
+        }
+        .orden-id {
+            background: #333;
+            color: #00ff88;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            word-break: break-all;
+            font-size: 14px;
+        }
+        .btn {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        .btn:hover { 
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <div class="exito-container">
+        <div class="checkmark"></div>
+        <h1>¡Pago Completado!</h1>
+        <p class="mensaje">Tu transaccion ha sido procesada exitosamente.</p>
+        
+        <div class="metodo-pago" id="metodoPago">
+            💳 Mercado Pago (Prueba)
+        </div>
+        
+        <div class="detalle">
+            <div class="detalle-item">
+                <span>Estado</span>
+                <span>✅ Completado</span>
+            </div>
+            <div class="detalle-item">
+                <span>Monto pagado</span>
+                <span id="montoPagado">$0.00 MXN</span>
+            </div>
+            <div class="detalle-item">
+                <span>Total</span>
+                <span id="totalPago">$0.00 MXN</span>
+            </div>
+        </div>
+        
+        <div class="orden-id" id="ordenId">
+            ID Pago: N/A
+        </div>
+        
+        <p class="mensaje" style="font-size: 14px; color: #999;">
+            Este fue un pago de prueba. No se realizo ningun cargo real.
+        </p>
+        
+        <a href="/catalogo" class="btn">🛍️ Volver al Catalogo</a>
+    </div>
+
+    <script>
+        function cargarDatosPago() {
+            const params = new URLSearchParams(window.location.search);
+            const paymentId = params.get('payment_id') || 'N/A';
+            const metodo = params.get('metodo') || 'mercadopago';
+            
+            const metodoTexto = metodo === 'paypal' ? '💰 PayPal (Prueba)' : '💳 Mercado Pago (Prueba)';
+            document.getElementById('metodoPago').textContent = metodoTexto;
+            document.getElementById('ordenId').textContent = 'ID Pago: ' + paymentId;
+        }
+
+        cargarDatosPago();
+    </script>
+</body>
+</html>
